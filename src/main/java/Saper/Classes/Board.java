@@ -8,6 +8,7 @@ public class Board {
      * 0 in array means empty place
      * 1-8 in array means number of neighboring mines
      * 9 in array means mine
+     * 10 in array means flag
      */
     private Integer[][] array;
 
@@ -16,7 +17,7 @@ public class Board {
         this.array = new Integer[size][size];
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++){
-                array[i][j]=0;
+                array[i][j]=11;
             }
         }
     }
@@ -29,6 +30,14 @@ public class Board {
         return false;
     }
 
+    public void setNum(int x, int y, int num){
+        array[x][y]=num;
+    }
+
+    public void setNum(int btnNum, int num){
+        array[btnNum%size][btnNum/size]=num;
+    }
+
     public boolean setMines(int ammount){
         if(ammount>=size*size){
             return false;
@@ -37,7 +46,7 @@ public class Board {
         for(int i=0;i<ammount;i++) {
             int x = random.nextInt(size);
             int y = random.nextInt(size);
-            if(array[x][y]==1){
+            if(array[x][y]!=11){
                 i--;
                 continue;
             }
@@ -49,18 +58,81 @@ public class Board {
     }
 
     public void printBoard(){
-        System.out.println("-----------------------");
+        for(int i=0;i<size*2+3;i++){
+            System.out.print("-");
+        }
+        System.out.println();
         for(int i=0;i<size;i++){
             System.out.print("| ");
             for(int j=0;j<size;j++){
-                System.out.print(array[j][i]+" ");
+                if(array[j][i]==9)
+                    System.out.print("* ");
+                else
+                    System.out.print(array[j][i]+" ");
             }
             System.out.print("|\n");
         }
-        System.out.println("-----------------------");
+        for(int i=0;i<size*2+3;i++){
+            System.out.print("-");
+        }
+        System.out.println();
+
     }
 
     public void refactorMines(){
+        for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                if(array[i][j]==9){
+                    continue;
+                }
+                int counter=0;
 
+                try{
+                    if(array[i-1][j]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i+1][j]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i][j+1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i][j-1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+
+                try{
+                    if(array[i-1][j-1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i+1][j+1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i-1][j+1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+                try{
+                    if(array[i+1][j-1]==9)
+                        counter++;
+                } catch (ArrayIndexOutOfBoundsException e){}
+
+                array[i][j]=counter;
+
+            }
+
+        }
+    }
+
+    public int getNum(int x, int y){
+        return array[x][y];
+    }
+
+    public int getNum(int btnNum){
+        return array[btnNum%size][btnNum/size];
     }
 }

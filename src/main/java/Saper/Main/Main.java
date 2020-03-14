@@ -24,9 +24,7 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
-        Board board = new Board(10);
-        board.setMines(30);
-        board.printBoard();
+
 
 
 
