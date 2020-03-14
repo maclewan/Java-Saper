@@ -1,10 +1,10 @@
-package sample;
+package Saper.Main;
+import Saper.Classes.Board;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import Saper.Controllers.StartMenuController;
 
 
 public class Main extends Application {
@@ -14,7 +14,7 @@ public class Main extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("StartMenu.fxml"));
 
-        StartMenuController startMenuController = new StartMenuController();
+        StartMenuController startMenuController = new StartMenuController(primaryStage);
 
         fxmlLoader.setController(startMenuController);
 
@@ -24,7 +24,9 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
-
+        Board board = new Board(10);
+        board.setMines(30);
+        board.printBoard();
 
 
 

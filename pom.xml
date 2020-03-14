@@ -29,7 +29,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>sample.MainPackage.Main</mainClass>
+                            <mainClass>Saper.MainPackage.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -54,7 +54,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>sample.MainPackage.Main</mainClass>
+                            <mainClass>Saper.MainPackage.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
