@@ -210,6 +210,8 @@ public class BoardController {
 
 
             if (!playersBoard.verifyMines()&!isGameEnded) {
+                showAllTiles();
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Przegrałeś");
                 alert.setHeaderText(null);
@@ -307,7 +309,20 @@ public class BoardController {
     }
 
     private void showAllTiles(){
- //todo:
+        for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                if(playersBoard.getNum(j,i)==10 && board.getNum(j,i)!=9){
+                    ToggleButton tempButton = buttonList.get(i*8 +j);
+                    tempButton.setSelected(true);
+                    setButtonImage(tempButton,12);
+                }
+                else if(playersBoard.getNum(j,i)==11){
+                    ToggleButton tempButton = buttonList.get(i*8 +j);
+                    tempButton.setSelected(true);
+                    setButtonImage(tempButton,board.getNum(j,i));
+                }
+            }
+        }
     }
 
     private void setButtonImage(ToggleButton tb, int imageNumber){
