@@ -36,6 +36,7 @@ public class Board {
     }
 
     public void setNum(int btnNum, int num){
+
         array[btnNum%size][btnNum/size]=num;
     }
 
@@ -85,50 +86,52 @@ public class Board {
     public void refactorMines(){
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++){
-                if(array[i][j]==9){
-                    continue;
-                }
-                int counter=0;
-
-                try{
-                    if(array[i-1][j]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i+1][j]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i][j+1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i][j-1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-
-                try{
-                    if(array[i-1][j-1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i+1][j+1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i-1][j+1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-                try{
-                    if(array[i+1][j-1]==9)
-                        counter++;
-                } catch (ArrayIndexOutOfBoundsException e){}
-
-                array[i][j]=counter;
-
+                array[i][j]=getNumberOfMinesAround(i,j);
             }
-
         }
+    }
+
+    public int getNumberOfMinesAround(int i, int j){
+        if(array[i][j]==9 || array[i][j]==10){
+            return 9;
+        }
+        int counter=0;
+
+        try{
+            if(array[i-1][j]==9 || array[i-1][j]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i+1][j]==9 || array[i+1][j]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i][j+1]==9 || array[i][j+1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i][j-1]==9 || array[i][j-1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+
+        try{
+            if(array[i-1][j-1]==9 || array[i-1][j-1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i+1][j+1]==9 || array[i+1][j+1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i-1][j+1]==9 || array[i-1][j+1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+        try{
+            if(array[i+1][j-1]==9 || array[i+1][j-1]==10)
+                counter++;
+        } catch (ArrayIndexOutOfBoundsException e){}
+
+        return counter;
     }
 
     public int getNum(int x, int y){

@@ -129,6 +129,7 @@ public class BoardController {
              * Button pressed (left-click)
              */
             buttonList.get(i).setOnAction(event -> {
+
                 clickBoardButton(finalI);
 
 
@@ -171,16 +172,14 @@ public class BoardController {
 
             if (!buttonList.get(finalI).isSelected()) {
                 buttonList.get(finalI).setSelected(true);
-                System.out.println("Wyjatek dla "+finalI);
+                openSafeAreas(finalI);
 
-                //todo: odkrywanie "nieistotnych" pól w około
             }
             else {
                 setButtonImage(buttonList.get(finalI), board.getNum(finalI));
                 if (board.getNum(finalI) == 0   &&  playersBoard.getNum(finalI)==11) {
                     playersBoard.setNum(finalI, board.getNum(finalI));
 
-                    System.out.println("opening Zeros "+finalI);
                     openZeros(finalI);
 
                 }
@@ -231,10 +230,26 @@ public class BoardController {
             try{
                 if(board.getNum(x,y)!=9 && playersBoard.getNum(x,y)==11); {
                     temp= x + size * y;
+
+                    //xD dziwnym trafem to przepuszczało 9-tki
+                    if(board.getNum(temp)==9)
+                        continue;
+
+
                     buttonList.get(temp).setSelected(true);
                     clickBoardButton(temp);
                 }
             } catch (ArrayIndexOutOfBoundsException e){}
+        }
+    }
+
+    private void openSafeAreas(int finalI){
+        int x=finalI%size;
+        int y=finalI/size;
+
+
+        if(playersBoard.getNumberOfMinesAround(x,y)==board.getNum(finalI)){
+            openZeros(finalI);
         }
     }
 
@@ -269,7 +284,6 @@ public class BoardController {
     }
 
     private void setButtonImage(ToggleButton tb, int imageNumber){
-
         String urlPart = Integer.toString(imageNumber);
         Image image = new Image("/Images/"+urlPart+".png",25,25,false,true,true);
         tb.setGraphic(new ImageView(image));
