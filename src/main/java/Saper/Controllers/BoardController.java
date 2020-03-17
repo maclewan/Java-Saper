@@ -291,6 +291,7 @@ public class BoardController {
             return;
         }
         //todo: usunac:
+
         board.printBoard();
 
         lblTime.setText("00:00");
