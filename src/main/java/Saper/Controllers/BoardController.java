@@ -2,8 +2,8 @@ package Saper.Controllers;
 
 import Saper.Classes.Board;
 import Saper.Classes.SuperArrayList;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +15,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.io.File;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
 
 public class BoardController {
     private Stage thisStage = new Stage();
@@ -27,6 +30,8 @@ public class BoardController {
     private boolean isGameStarted=false;
     private Board board;
     private Board playersBoard;
+    private boolean isGameEnded =false;
+    private Timer timer;
 
 
     public BoardController(Stage thisStage, int size){
@@ -48,7 +53,7 @@ public class BoardController {
         }
 
         fldCount.setText(Integer.toString(mines));
-
+        timer = new Timer(this);
 
 
 
@@ -104,9 +109,10 @@ public class BoardController {
 
     @FXML
     void btnRestartClicked(ActionEvent event) {
-        isGameStarted=false;
+        stopTimer();
         resetButtons();
         startGame();
+        lblTime.setText("00:00");
     }
 
     private void resetButtons() {
@@ -120,56 +126,119 @@ public class BoardController {
         for(int i=0;i<buttonList.size();i++){
             int finalI = i;
             /**
-             * Button pressed
+             * Button pressed (left-click)
              */
             buttonList.get(i).setOnAction(event -> {
-                if(!isGameStarted){
-                    isGameStarted=true;
-                    startTimer();
-                }
-                if(!buttonList.get(finalI).isSelected()){
-                    buttonList.get(finalI).setSelected(true);
-                }
-                else{
-                    //todo: clicking board
-                    setButtonImage(buttonList.get(finalI),9);
+                clickBoardButton(finalI);
 
-                    if(playersBoard.getNum(finalI)==11)
-                        incrementMines();
-                    playersBoard.setNum(finalI,9);
-                    //todo: if bomb placed incrementMines()
-
-                }
 
             });
 
             /**
              * Button right-clicked
              */
+
+
             buttonList.get(i).setOnMouseClicked(mouseEvent -> {
-                if(!isGameStarted){
-                    isGameStarted=true;
-                    startTimer();
-                }
-                if(mouseEvent.getButton() == MouseButton.SECONDARY ){
-                    if(playersBoard.getNum(finalI)== 11) {
-                        playersBoard.setNum(finalI,10);
-                        setButtonImage(buttonList.get(finalI), 10);
-                        incrementMines();
+                if(!isGameEnded) {
+                    if (!isGameStarted) {
+                        startTimer();
                     }
-                    else if(playersBoard.getNum(finalI)== 10){
-                        playersBoard.setNum(finalI,11);
-                        setButtonImage(buttonList.get(finalI),11);
-                        decrementMines();
+                    if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                        if (playersBoard.getNum(finalI) == 11) {
+                            playersBoard.setNum(finalI, 10);
+                            setButtonImage(buttonList.get(finalI), 10);
+                            incrementMines();
+                        }
+                        else if (playersBoard.getNum(finalI) == 10) {
+                            playersBoard.setNum(finalI, 11);
+                            setButtonImage(buttonList.get(finalI), 11);
+                            decrementMines();
+                        }
                     }
                 }
             });
+
         }
     }
 
+    private void clickBoardButton(int finalI){
+        if(!isGameEnded) {
+            if (!isGameStarted) {
+                startTimer();
+            }
+
+
+            if (!buttonList.get(finalI).isSelected()) {
+                buttonList.get(finalI).setSelected(true);
+                System.out.println("Wyjatek dla "+finalI);
+
+                //todo: odkrywanie "nieistotnych" pól w około
+            }
+            else {
+                setButtonImage(buttonList.get(finalI), board.getNum(finalI));
+                if (board.getNum(finalI) == 0   &&  playersBoard.getNum(finalI)==11) {
+                    playersBoard.setNum(finalI, board.getNum(finalI));
+
+                    System.out.println("opening Zeros "+finalI);
+                    openZeros(finalI);
+
+                }
+                playersBoard.setNum(finalI, board.getNum(finalI));
+
+            }
+
+
+            if (!playersBoard.verifyMines()) {
+                System.err.println("Przegrałeś!");
+                stopGame();
+            }
+        }
+    }
+
+    private void openZeros(int finalI){
+        int temp;
+        int constX;
+        int constY;
+        constX=(finalI%size);
+        constY=(finalI/size);
+        ArrayList<Integer> xList=new ArrayList<>();
+        ArrayList<Integer> yList=new ArrayList<>();
+
+        xList.add(-1);
+        xList.add(1);
+        xList.add(0);
+        xList.add(0);
+        xList.add(-1);
+        xList.add(1);
+        xList.add(1);
+        xList.add(-1);
+
+        yList.add(0);
+        yList.add(0);
+        yList.add(1);
+        yList.add(-1);
+        yList.add(-1);
+        yList.add(-1);
+        yList.add(1);
+        yList.add(1);
+
+
+        for(int i=0;i<xList.size();i++){
+            int x=constX+xList.get(i);
+            int y=constY+yList.get(i);
+
+            try{
+                if(board.getNum(x,y)!=9 && playersBoard.getNum(x,y)==11); {
+                    temp= x + size * y;
+                    buttonList.get(temp).setSelected(true);
+                    clickBoardButton(temp);
+                }
+            } catch (ArrayIndexOutOfBoundsException e){}
+        }
+    }
 
     private void startGame(){
-
 
         board = new Board(size);
         playersBoard = new Board(size);
@@ -179,18 +248,24 @@ public class BoardController {
             if(mines>((size*size)-1))
                 throw new NumberFormatException();
             board.setMines(mines);
-
         }
         catch (NumberFormatException e){
             fldCount.setText("Wrong number");
             return;
         }
+        //todo: usunac:
         board.printBoard();
 
-        lblTime.setText("00:00:00");
+        lblTime.setText("00:00");
         minesPlaced=0;
         lblBombsLeft.setText(Integer.toString(mines-minesPlaced));
+        isGameEnded =false;
+        isGameStarted=false;
 
+    }
+
+    private void stopGame(){
+        isGameEnded=true;
     }
 
     private void setButtonImage(ToggleButton tb, int imageNumber){
@@ -205,7 +280,13 @@ public class BoardController {
     }
 
     private void startTimer(){
-        System.out.println("Starting timer");
+        isGameStarted=true;
+        timer=new Timer(this);
+        timer.start();
+    }
+
+    private void stopTimer(){
+        timer.interrupt();
     }
 
     private void incrementMines(){
@@ -218,4 +299,41 @@ public class BoardController {
         lblBombsLeft.setText(Integer.toString(mines-minesPlaced));
     }
 
+    private class Timer extends Thread{
+        private BoardController bc;
+        private LocalTime startTime;
+        private LocalTime inGameTime;
+        private long gameDuration;
+        private long prevGameDuration;
+
+        private Timer(BoardController bc){
+            this.bc=bc;
+        }
+
+        @Override
+        public synchronized void run() {
+            startTime=LocalTime.now();
+            while(isGameStarted&&!isGameEnded){
+                try {
+                    Thread.sleep(230);
+                } catch (InterruptedException e) {
+                }
+                gameDuration = Duration.between(startTime,LocalTime.now()).getSeconds();
+                if(prevGameDuration==gameDuration){
+                    continue;
+                }
+                prevGameDuration=gameDuration;
+                inGameTime= LocalTime.of(0,(int)gameDuration/60,(int)gameDuration%60);
+
+                Platform.runLater(() ->  {
+                    lblTime.setText(inGameTime.format(DateTimeFormatter.ofPattern("mm:ss")));
+                });
+
+            }
+
+
+        }
+    }
+
 }
+

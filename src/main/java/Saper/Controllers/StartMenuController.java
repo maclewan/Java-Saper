@@ -70,7 +70,7 @@ public class StartMenuController {
 
         try {
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Board.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Fxml/Board.fxml"));
 
             BoardController boardController = new BoardController(stage,size);
             fxmlLoader.setController(boardController);

@@ -5,10 +5,11 @@ import java.util.Random;
 public class Board {
     private int size;
     /**
-     * 0 in array means empty place
+     * 0 in array means 0 neighbours
      * 1-8 in array means number of neighboring mines
      * 9 in array means mine
      * 10 in array means flag
+     * 11 in array means empty, not defined
      */
     private Integer[][] array;
 
@@ -67,6 +68,8 @@ public class Board {
             for(int j=0;j<size;j++){
                 if(array[j][i]==9)
                     System.out.print("* ");
+                else if(array[j][i]==0)
+                    System.out.print(". ");
                 else
                     System.out.print(array[j][i]+" ");
             }
@@ -134,5 +137,15 @@ public class Board {
 
     public int getNum(int btnNum){
         return array[btnNum%size][btnNum/size];
+    }
+
+    public boolean verifyMines(){
+        for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                if(array[i][j]==9)
+                    return false;
+            }
+        }
+        return true;
     }
 }
