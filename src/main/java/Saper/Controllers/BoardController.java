@@ -5,20 +5,21 @@ import Saper.Classes.SuperArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import static java.awt.Font.BOLD;
 
 
 public class BoardController {
@@ -32,6 +33,11 @@ public class BoardController {
     private Board playersBoard;
     private boolean isGameEnded =false;
     private Timer timer;
+
+    ArrayList<Integer> xList=new ArrayList<>();
+    ArrayList<Integer> yList=new ArrayList<>();
+
+
 
 
     public BoardController(Stage thisStage, int size){
@@ -75,13 +81,27 @@ public class BoardController {
             gamePane.getChildren().add(buttonList.getLast());
             buttonList.getLast().setLayoutX((i%size)*25);
             buttonList.getLast().setLayoutY(i/size*25);
-
-
         }
 
+        {
+            xList.add(-1);
+            xList.add(1);
+            xList.add(0);
+            xList.add(0);
+            xList.add(-1);
+            xList.add(1);
+            xList.add(1);
+            xList.add(-1);
 
-
-
+            yList.add(0);
+            yList.add(0);
+            yList.add(1);
+            yList.add(-1);
+            yList.add(-1);
+            yList.add(-1);
+            yList.add(1);
+            yList.add(1);
+        }
 
         addButtonsListeners();
         resetButtons();
@@ -113,6 +133,7 @@ public class BoardController {
         resetButtons();
         startGame();
         lblTime.setText("00:00");
+        btnRestart.setFont(Font.font(null, FontWeight.NORMAL,13));
     }
 
     private void resetButtons() {
@@ -188,8 +209,15 @@ public class BoardController {
             }
 
 
-            if (!playersBoard.verifyMines()) {
-                System.err.println("Przegrałeś!");
+            if (!playersBoard.verifyMines()&!isGameEnded) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Przegrałeś");
+                alert.setHeaderText(null);
+                alert.setContentText("Koniec gry :(");
+
+                alert.showAndWait();
+                btnRestart.setFont(Font.font(null, FontWeight.BOLD,13));
+                showAllTiles();
                 stopGame();
             }
         }
@@ -201,26 +229,6 @@ public class BoardController {
         int constY;
         constX=(finalI%size);
         constY=(finalI/size);
-        ArrayList<Integer> xList=new ArrayList<>();
-        ArrayList<Integer> yList=new ArrayList<>();
-
-        xList.add(-1);
-        xList.add(1);
-        xList.add(0);
-        xList.add(0);
-        xList.add(-1);
-        xList.add(1);
-        xList.add(1);
-        xList.add(-1);
-
-        yList.add(0);
-        yList.add(0);
-        yList.add(1);
-        yList.add(-1);
-        yList.add(-1);
-        yList.add(-1);
-        yList.add(1);
-        yList.add(1);
 
 
         for(int i=0;i<xList.size();i++){
@@ -228,12 +236,9 @@ public class BoardController {
             int y=constY+yList.get(i);
 
             try{
-                if(board.getNum(x,y)!=9 && playersBoard.getNum(x,y)==11); {
+                if(board.getNum(x,y)!=9){
                     temp= x + size * y;
 
-                    //xD dziwnym trafem to przepuszczało 9-tki
-                    if(board.getNum(temp)==9)
-                        continue;
 
 
                     buttonList.get(temp).setSelected(true);
@@ -244,12 +249,29 @@ public class BoardController {
     }
 
     private void openSafeAreas(int finalI){
-        int x=finalI%size;
-        int y=finalI/size;
+        int constX;
+        int constY;
+        constX=(finalI%size);
+        constY=(finalI/size);
 
 
-        if(playersBoard.getNumberOfMinesAround(x,y)==board.getNum(finalI)){
-            openZeros(finalI);
+        if(playersBoard.getNumberOfMinesAround(constX,constY)==board.getNum(finalI)){
+
+            int temp;
+
+            for(int i=0;i<xList.size();i++){
+                int x=constX+xList.get(i);
+                int y=constY+yList.get(i);
+
+                try{
+                    if(playersBoard.getNum(x,y)==11){
+                        temp= x + size * y;
+
+                        buttonList.get(temp).setSelected(true);
+                        clickBoardButton(temp);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){}
+            }
         }
     }
 
@@ -281,6 +303,10 @@ public class BoardController {
 
     private void stopGame(){
         isGameEnded=true;
+    }
+
+    private void showAllTiles(){
+
     }
 
     private void setButtonImage(ToggleButton tb, int imageNumber){
