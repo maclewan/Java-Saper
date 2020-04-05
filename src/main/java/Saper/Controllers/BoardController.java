@@ -19,11 +19,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import static java.awt.Font.BOLD;
-
 
 public class BoardController {
-    private Stage thisStage = new Stage();
+    private Stage thisStage;
     private int size;
     private int mines;
     private int minesPlaced;
@@ -33,6 +31,8 @@ public class BoardController {
     private Board playersBoard;
     private boolean isGameEnded =false;
     private Timer timer;
+    private LocalTime gameTime;
+
 
     ArrayList<Integer> xList=new ArrayList<>();
     ArrayList<Integer> yList=new ArrayList<>();
@@ -49,7 +49,7 @@ public class BoardController {
     @FXML
     private void initialize(){
         if(size==8){
-            mines=10;
+            mines=2;
         }
         else if(size==16){
             mines=40;
@@ -151,8 +151,8 @@ public class BoardController {
              */
             buttonList.get(i).setOnAction(event -> {
 
-                clickBoardButton(finalI);
-
+                leftClickBoardButton(finalI);
+                checkIfGameWon();
 
             });
 
@@ -160,29 +160,17 @@ public class BoardController {
              * Button right-clicked
              */
             buttonList.get(i).setOnMouseClicked(mouseEvent -> {
-                if(!isGameEnded) {
-                    if (!isGameStarted) {
-                        startTimer();
-                    }
-                    if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                        if (playersBoard.getNum(finalI) == 11) {
-                            playersBoard.setNum(finalI, 10);
-                            setButtonImage(buttonList.get(finalI), 10);
-                            incrementMines();
-                        }
-                        else if (playersBoard.getNum(finalI) == 10) {
-                            playersBoard.setNum(finalI, 11);
-                            setButtonImage(buttonList.get(finalI), 11);
-                            decrementMines();
-                        }
-                    }
+                if(mouseEvent.getButton() == MouseButton.SECONDARY) {
+                    rightClickBoardButton(finalI);
+                    checkIfGameWon();
                 }
+
             });
 
         }
     }
 
-    private void clickBoardButton(int finalI){
+    private void leftClickBoardButton(int finalI){
         if(!isGameEnded) {
 
 
@@ -223,6 +211,26 @@ public class BoardController {
         }
     }
 
+    private void rightClickBoardButton(int finalI){
+        if(!isGameEnded) {
+            if (!isGameStarted) {
+                startTimer();
+            }
+
+            if (playersBoard.getNum(finalI) == 11) {
+                playersBoard.setNum(finalI, 10);
+                setButtonImage(buttonList.get(finalI), 10);
+                incrementMines();
+            }
+            else if (playersBoard.getNum(finalI) == 10) {
+                playersBoard.setNum(finalI, 11);
+                setButtonImage(buttonList.get(finalI), 11);
+                decrementMines();
+            }
+
+        }
+    }
+
     private void openZeros(int finalI){
         int temp;
         int constX;
@@ -242,7 +250,7 @@ public class BoardController {
 
 
                     buttonList.get(temp).setSelected(true);
-                    clickBoardButton(temp);
+                    leftClickBoardButton(temp);
                 }
             } catch (ArrayIndexOutOfBoundsException e){}
         }
@@ -268,11 +276,23 @@ public class BoardController {
                         temp= x + size * y;
 
                         buttonList.get(temp).setSelected(true);
-                        clickBoardButton(temp);
+                        leftClickBoardButton(temp);
                     }
                 } catch (ArrayIndexOutOfBoundsException e){}
             }
         }
+    }
+
+    private void checkIfGameWon(){
+        if(minesPlaced!=mines) {
+            return;
+        }
+        for (int i = 0; i < size*size; i++) {
+            if(board.getNum(i)==9&&!(playersBoard.getNum(i)==10)){
+                return;
+            }
+        }
+        gameWon();
     }
 
     private void startGame(){
@@ -303,6 +323,21 @@ public class BoardController {
 
     private void stopGame(){
         stopTimer();
+
+
+    }
+
+    private void gameWon(){
+        stopGame();
+
+        String durString=gameTime.format(DateTimeFormatter.ofPattern("mm:ss"));
+        //todo: add to scoreboard
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Koniec gry");
+        alert.setHeaderText("Wygrałeś!");
+        alert.setContentText("Twój czas: "+durString);
+        alert.showAndWait();
     }
 
     private void showAllTiles(){
@@ -336,6 +371,8 @@ public class BoardController {
         isGameStarted=true;
         timer=new Timer(this);
         timer.start();
+
+
     }
 
     private void stopTimer(){
@@ -364,7 +401,7 @@ public class BoardController {
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             startTime=LocalTime.now();
             while(isGameStarted&&!isGameEnded){
                 if(isGameEnded){
@@ -375,7 +412,7 @@ public class BoardController {
                     Thread.sleep(230);
                 } catch (InterruptedException e) {
                 }
-                gameDuration = Duration.between(startTime,LocalTime.now()).getSeconds();
+                gameDuration = (int)Duration.between(startTime,LocalTime.now()).getSeconds();
                 if(prevGameDuration==gameDuration){
                     continue;
                 }
@@ -384,9 +421,11 @@ public class BoardController {
 
                 Platform.runLater(() ->  {
                     lblTime.setText(inGameTime.format(DateTimeFormatter.ofPattern("mm:ss")));
-                });
+                    bc.gameTime=inGameTime;
 
+                });
             }
+
 
 
         }
