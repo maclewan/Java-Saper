@@ -329,7 +329,6 @@ public class BoardController {
 
     private void gameWon(){
         stopGame();
-
         String durString=gameTime.format(DateTimeFormatter.ofPattern("mm:ss"));
         //todo: add to scoreboard
 
@@ -377,6 +376,7 @@ public class BoardController {
 
     private void stopTimer(){
         isGameEnded=true;
+        timer.interrupt();
     }
 
     private void incrementMines(){
@@ -402,28 +402,29 @@ public class BoardController {
 
         @Override
         public void run() {
-            startTime=LocalTime.now();
-            while(isGameStarted&&!isGameEnded){
-                if(isGameEnded){
+            try {
+                startTime = LocalTime.now();
+                while (isGameStarted && !isGameEnded) {
+                    try {
+                        Thread.sleep(230);
+                    } catch (InterruptedException e) {
+                    }
+                    gameDuration = (int) Duration.between(startTime, LocalTime.now()).getSeconds();
+                    if (prevGameDuration == gameDuration) {
+                        continue;
+                    }
+                    prevGameDuration = gameDuration;
+                    inGameTime = LocalTime.of(0, (int) gameDuration /60, (int) gameDuration % 60);
 
-                    this.interrupt();
-                }
-                try {
-                    Thread.sleep(230);
-                } catch (InterruptedException e) {
-                }
-                gameDuration = (int)Duration.between(startTime,LocalTime.now()).getSeconds();
-                if(prevGameDuration==gameDuration){
-                    continue;
-                }
-                prevGameDuration=gameDuration;
-                inGameTime= LocalTime.of(0,(int)gameDuration/60,(int)gameDuration%60);
+                    Platform.runLater(() -> {
+                        lblTime.setText(inGameTime.format(DateTimeFormatter.ofPattern("mm:ss")));
+                        bc.gameTime = inGameTime;
 
-                Platform.runLater(() ->  {
-                    lblTime.setText(inGameTime.format(DateTimeFormatter.ofPattern("mm:ss")));
-                    bc.gameTime=inGameTime;
-
-                });
+                    });
+                }
+            }
+            catch(java.time.DateTimeException e){
+                System.err.println("Your game lasted too long");
             }
 
 
