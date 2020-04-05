@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import Saper.Controllers.StartMenuController;
 
-//hello new hard drive test
+
 public class Main extends Application {
 
     @Override

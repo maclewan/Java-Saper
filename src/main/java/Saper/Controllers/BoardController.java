@@ -159,8 +159,6 @@ public class BoardController {
             /**
              * Button right-clicked
              */
-
-
             buttonList.get(i).setOnMouseClicked(mouseEvent -> {
                 if(!isGameEnded) {
                     if (!isGameStarted) {
@@ -186,9 +184,6 @@ public class BoardController {
 
     private void clickBoardButton(int finalI){
         if(!isGameEnded) {
-            if (!isGameStarted) {
-                startTimer();
-            }
 
 
             if (!buttonList.get(finalI).isSelected()) {
@@ -210,6 +205,7 @@ public class BoardController {
 
 
             if (!playersBoard.verifyMines()&!isGameEnded) {
+                stopGame();
                 showAllTiles();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -219,8 +215,10 @@ public class BoardController {
 
                 alert.showAndWait();
                 btnRestart.setFont(Font.font(null, FontWeight.BOLD,13));
-                showAllTiles();
-                stopGame();
+            }
+
+            if (!isGameStarted) {
+                startTimer();
             }
         }
     }
@@ -293,7 +291,6 @@ public class BoardController {
             return;
         }
         //todo: usunac:
-
         board.printBoard();
 
         lblTime.setText("00:00");
@@ -305,7 +302,7 @@ public class BoardController {
     }
 
     private void stopGame(){
-        isGameEnded=true;
+        stopTimer();
     }
 
     private void showAllTiles(){
@@ -342,7 +339,7 @@ public class BoardController {
     }
 
     private void stopTimer(){
-        timer.interrupt();
+        isGameEnded=true;
     }
 
     private void incrementMines(){
@@ -370,6 +367,10 @@ public class BoardController {
         public synchronized void run() {
             startTime=LocalTime.now();
             while(isGameStarted&&!isGameEnded){
+                if(isGameEnded){
+
+                    this.interrupt();
+                }
                 try {
                     Thread.sleep(230);
                 } catch (InterruptedException e) {
