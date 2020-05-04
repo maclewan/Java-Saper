@@ -1,10 +1,11 @@
 package Saper.Controllers;
 
-import Saper.Classes.Board;
+import Saper.Classes.GameLogic;
 import Saper.Classes.SuperArrayList;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,62 +15,45 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.io.IOException;
 
 
 public class BoardController {
+    private GameLogic logic;
     private Stage thisStage;
-    private int size;
-    private int mines;
-    private int minesPlaced;
     private SuperArrayList<ToggleButton> buttonList;
-    private boolean isGameStarted=false;
-    private Board board;
-    private Board playersBoard;
-    private boolean isGameEnded =false;
-    private Timer timer;
-    private LocalTime gameTime;
-
-
-    ArrayList<Integer> xList=new ArrayList<>();
-    ArrayList<Integer> yList=new ArrayList<>();
-
-
 
 
     public BoardController(Stage thisStage, int size){
+        logic = new GameLogic(this);
         this.thisStage=thisStage;
-        this.size = size;
-
+        logic.setSize(size);
     }
 
     @FXML
     private void initialize(){
-        if(size==8){
-            mines=2;
+        if(logic.getSize()==8){
+            logic.setMines(10);
         }
-        else if(size==16){
-            mines=40;
+        else if(logic.getSize()==16){
+            logic.setMines(40);
         }
-        else if(size==24){
-            mines=130;
+        else if(logic.getSize()==24){
+            logic.setMines(130);
         }
 
-        fldCount.setText(Integer.toString(mines));
-        timer = new Timer(this);
+        fldCount.setText(Integer.toString(logic.getMines()));
+
 
 
 
 
         buttonList=new SuperArrayList<>();
-        gamePane.setMaxSize(25*size,25*size);
-        for(int i=0;i<size*size;i++){
+        gamePane.setMaxSize(25*logic.getSize(),25*logic.getSize());
+        for(int i=0;i<logic.getSize()*logic.getSize();i++){
 
-            stagePane.setPrefWidth(860-(24-size)*25);
-            stagePane.setPrefHeight(720-(24-size)*25);
+            stagePane.setPrefWidth(860-(24-logic.getSize())*25);
+            stagePane.setPrefHeight(720-(24-logic.getSize())*25);
             thisStage.setMinWidth(stagePane.getPrefWidth());
             thisStage.setMinHeight(stagePane.getPrefHeight()+30);
 
@@ -79,35 +63,34 @@ public class BoardController {
             buttonList.getLast().setMaxHeight(25);
             buttonList.getLast().setMaxWidth(25);
             gamePane.getChildren().add(buttonList.getLast());
-            buttonList.getLast().setLayoutX((i%size)*25);
-            buttonList.getLast().setLayoutY(i/size*25);
+            buttonList.getLast().setLayoutX((i%logic.getSize())*25);
+            buttonList.getLast().setLayoutY(i/logic.getSize()*25);
         }
 
         {
-            xList.add(-1);
-            xList.add(1);
-            xList.add(0);
-            xList.add(0);
-            xList.add(-1);
-            xList.add(1);
-            xList.add(1);
-            xList.add(-1);
+            logic.getXList().add(-1);
+            logic.getXList().add(1);
+            logic.getXList().add(0);
+            logic.getXList().add(0);
+            logic.getXList().add(-1);
+            logic.getXList().add(1);
+            logic.getXList().add(1);
+            logic.getXList().add(-1);
 
-            yList.add(0);
-            yList.add(0);
-            yList.add(1);
-            yList.add(-1);
-            yList.add(-1);
-            yList.add(-1);
-            yList.add(1);
-            yList.add(1);
+            logic.getYList().add(0);
+            logic.getYList().add(0);
+            logic.getYList().add(1);
+            logic.getYList().add(-1);
+            logic.getYList().add(-1);
+            logic.getYList().add(-1);
+            logic.getYList().add(1);
+            logic.getYList().add(1);
         }
 
         addButtonsListeners();
         resetButtons();
-        startGame();
+        logic.startGame();
     }
-
 
     @FXML
     private TextField fldCount;
@@ -117,6 +100,9 @@ public class BoardController {
 
     @FXML
     private Button btnRestart;
+
+    @FXML
+    private Button btnMenu;
 
     @FXML
     private Pane gamePane;
@@ -129,17 +115,33 @@ public class BoardController {
 
     @FXML
     void btnRestartClicked(ActionEvent event) {
-        stopTimer();
+        logic.stopTimer();
+        logic.startGame();
         resetButtons();
-        startGame();
         lblTime.setText("00:00");
         btnRestart.setFont(Font.font(null, FontWeight.NORMAL,13));
     }
 
-    private void resetButtons() {
-        for(ToggleButton btn : buttonList){
-            btn.setSelected(false);
-            setButtonImage(btn,11);
+    @FXML
+    void btnMenuClicked(ActionEvent event){
+        logic.stopGame();
+
+        try {
+            Stage newStage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Fxml/StartMenu.fxml"));
+
+            StartMenuController smc = new StartMenuController(newStage);
+            fxmlLoader.setController(smc);
+
+            Scene scene = new Scene(fxmlLoader.load());
+            newStage.setTitle("Saper");
+            newStage.setScene(scene);
+            newStage.show();
+            newStage.setResizable(false);
+
+            thisStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -152,7 +154,7 @@ public class BoardController {
             buttonList.get(i).setOnAction(event -> {
 
                 leftClickBoardButton(finalI);
-                checkIfGameWon();
+                logic.checkIfGameWon();
 
             });
 
@@ -162,7 +164,7 @@ public class BoardController {
             buttonList.get(i).setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getButton() == MouseButton.SECONDARY) {
                     rightClickBoardButton(finalI);
-                    checkIfGameWon();
+                    logic.checkIfGameWon();
                 }
 
             });
@@ -170,187 +172,78 @@ public class BoardController {
         }
     }
 
-    private void leftClickBoardButton(int finalI){
-        if(!isGameEnded) {
-
-
-            if (!buttonList.get(finalI).isSelected()) {
-                buttonList.get(finalI).setSelected(true);
-                openSafeAreas(finalI);
-
-            }
-            else {
-                setButtonImage(buttonList.get(finalI), board.getNum(finalI));
-                if (board.getNum(finalI) == 0   &&  playersBoard.getNum(finalI)==11) {
-                    playersBoard.setNum(finalI, board.getNum(finalI));
-
-                    openZeros(finalI);
-
-                }
-                playersBoard.setNum(finalI, board.getNum(finalI));
-
-            }
-
-
-            if (!playersBoard.verifyMines()&!isGameEnded) {
-                stopGame();
-                showAllTiles();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Przegrałeś");
-                alert.setHeaderText(null);
-                alert.setContentText("Koniec gry :(");
-
-                alert.showAndWait();
-                btnRestart.setFont(Font.font(null, FontWeight.BOLD,13));
-            }
-
-            if (!isGameStarted) {
-                startTimer();
-            }
+    private void resetButtons() {
+        for(ToggleButton btn : buttonList){
+            btn.setSelected(false);
+            setButtonImage(btn,11);
         }
     }
 
-    private void rightClickBoardButton(int finalI){
-        if(!isGameEnded) {
-            if (!isGameStarted) {
-                startTimer();
+    public void leftClickBoardButton(int finalI){
+        if(logic.getIsGameEnded())
+            return;
+
+        if (!buttonList.get(finalI).isSelected()) {
+            buttonList.get(finalI).setSelected(true);
+            logic.openSafeAreas(finalI);
+
+        }
+        else {
+            setButtonImage(buttonList.get(finalI), logic.getBoard().getNum(finalI));
+            if (logic.getBoard().getNum(finalI) == 0   &&  logic.getPlayersBoard().getNum(finalI)==11) {
+                logic.getPlayersBoard().setNum(finalI, logic.getBoard().getNum(finalI));
+
+                logic.openZeros(finalI);
+
+            }
+            logic.getPlayersBoard().setNum(finalI, logic.getBoard().getNum(finalI));
+
+        }
+
+
+        if (!logic.getPlayersBoard().verifyMines()&!logic.getIsGameEnded()) {
+            logic.gameLoosed();
+            btnRestart.setFont(Font.font(null, FontWeight.BOLD,13));
+        }
+
+        if (!logic.getIsGameStarted()) {
+            logic.startTimer();
+        }
+
+    }
+
+    public void rightClickBoardButton(int finalI){
+        if(!logic.getIsGameEnded()) {
+            if (!logic.getIsGameStarted()) {
+                logic.startTimer();
             }
 
-            if (playersBoard.getNum(finalI) == 11) {
-                playersBoard.setNum(finalI, 10);
+            if (logic.getPlayersBoard().getNum(finalI) == 11) {
+                logic.getPlayersBoard().setNum(finalI, 10);
                 setButtonImage(buttonList.get(finalI), 10);
-                incrementMines();
+                logic.incrementMines();
             }
-            else if (playersBoard.getNum(finalI) == 10) {
-                playersBoard.setNum(finalI, 11);
+            else if (logic.getPlayersBoard().getNum(finalI) == 10) {
+                logic.getPlayersBoard().setNum(finalI, 11);
                 setButtonImage(buttonList.get(finalI), 11);
-                decrementMines();
+                logic.decrementMines();
             }
 
         }
     }
 
-    private void openZeros(int finalI){
-        int temp;
-        int constX;
-        int constY;
-        constX=(finalI%size);
-        constY=(finalI/size);
-
-
-        for(int i=0;i<xList.size();i++){
-            int x=constX+xList.get(i);
-            int y=constY+yList.get(i);
-
-            try{
-                if(board.getNum(x,y)!=9){
-                    temp= x + size * y;
-
-
-
-                    buttonList.get(temp).setSelected(true);
-                    leftClickBoardButton(temp);
-                }
-            } catch (ArrayIndexOutOfBoundsException e){}
-        }
-    }
-
-    private void openSafeAreas(int finalI){
-        int constX;
-        int constY;
-        constX=(finalI%size);
-        constY=(finalI/size);
-
-
-        if(playersBoard.getNumberOfMinesAround(constX,constY)==board.getNum(finalI)){
-
-            int temp;
-
-            for(int i=0;i<xList.size();i++){
-                int x=constX+xList.get(i);
-                int y=constY+yList.get(i);
-
-                try{
-                    if(playersBoard.getNum(x,y)==11){
-                        temp= x + size * y;
-
-                        buttonList.get(temp).setSelected(true);
-                        leftClickBoardButton(temp);
-                    }
-                } catch (ArrayIndexOutOfBoundsException e){}
-            }
-        }
-    }
-
-    private void checkIfGameWon(){
-        if(minesPlaced!=mines) {
-            return;
-        }
-        for (int i = 0; i < size*size; i++) {
-            if(board.getNum(i)==9&&!(playersBoard.getNum(i)==10)){
-                return;
-            }
-        }
-        gameWon();
-    }
-
-    private void startGame(){
-
-        board = new Board(size);
-        playersBoard = new Board(size);
-
-        try {
-            mines=Integer.parseInt(fldCount.getText());
-            if(mines>((size*size)-1))
-                throw new NumberFormatException();
-            board.setMines(mines);
-        }
-        catch (NumberFormatException e){
-            fldCount.setText("Wrong number");
-            return;
-        }
-        //todo: usunac:
-        board.printBoard();
-
-        lblTime.setText("00:00");
-        minesPlaced=0;
-        lblBombsLeft.setText(Integer.toString(mines-minesPlaced));
-        isGameEnded =false;
-        isGameStarted=false;
-
-    }
-
-    private void stopGame(){
-        stopTimer();
-
-
-    }
-
-    private void gameWon(){
-        stopGame();
-        String durString=gameTime.format(DateTimeFormatter.ofPattern("mm:ss"));
-        //todo: add to scoreboard
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Koniec gry");
-        alert.setHeaderText("Wygrałeś!");
-        alert.setContentText("Twój czas: "+durString);
-        alert.showAndWait();
-    }
-
-    private void showAllTiles(){
-        for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                if(playersBoard.getNum(j,i)==10 && board.getNum(j,i)!=9){
+    public void showAllTiles(){
+        for(int i=0;i<logic.getSize();i++){
+            for(int j=0;j<logic.getSize();j++){
+                if(logic.getPlayersBoard().getNum(j,i)==10 && logic.getBoard().getNum(j,i)!=9){
                     ToggleButton tempButton = buttonList.get(i*8 +j);
                     tempButton.setSelected(true);
                     setButtonImage(tempButton,12);
                 }
-                else if(playersBoard.getNum(j,i)==11){
+                else if(logic.getPlayersBoard().getNum(j,i)==11){
                     ToggleButton tempButton = buttonList.get(i*8 +j);
                     tempButton.setSelected(true);
-                    setButtonImage(tempButton,board.getNum(j,i));
+                    setButtonImage(tempButton,logic.getBoard().getNum(j,i));
                 }
             }
         }
@@ -360,77 +253,26 @@ public class BoardController {
         String urlPart = Integer.toString(imageNumber);
         Image image = new Image("/Images/"+urlPart+".png",25,25,false,true,true);
         tb.setGraphic(new ImageView(image));
-
-
-
-
     }
 
-    private void startTimer(){
-        isGameStarted=true;
-        timer=new Timer(this);
-        timer.start();
-
-
+    public void setLblBombsLeftText(String str) {
+        lblBombsLeft.setText(str);
     }
 
-    private void stopTimer(){
-        isGameEnded=true;
-        timer.interrupt();
+    public SuperArrayList<ToggleButton> getButtonList() {
+        return buttonList;
     }
 
-    private void incrementMines(){
-        minesPlaced++;
-        lblBombsLeft.setText(Integer.toString(mines-minesPlaced));
+    public String getFldCountText() {
+        return fldCount.getText();
     }
 
-    private void decrementMines(){
-        minesPlaced--;
-        lblBombsLeft.setText(Integer.toString(mines-minesPlaced));
+    public void setFldCountText(String str) {
+        fldCount.setText(str);
     }
 
-    private class Timer extends Thread{
-        private BoardController bc;
-        private LocalTime startTime;
-        private LocalTime inGameTime;
-        private long gameDuration;
-        private long prevGameDuration;
-
-        private Timer(BoardController bc){
-            this.bc=bc;
-        }
-
-        @Override
-        public void run() {
-            try {
-                startTime = LocalTime.now();
-                while (isGameStarted && !isGameEnded) {
-                    try {
-                        Thread.sleep(230);
-                    } catch (InterruptedException e) {
-                    }
-                    gameDuration = (int) Duration.between(startTime, LocalTime.now()).getSeconds();
-                    if (prevGameDuration == gameDuration) {
-                        continue;
-                    }
-                    prevGameDuration = gameDuration;
-                    inGameTime = LocalTime.of(0, (int) gameDuration /60, (int) gameDuration % 60);
-
-                    Platform.runLater(() -> {
-                        lblTime.setText(inGameTime.format(DateTimeFormatter.ofPattern("mm:ss")));
-                        bc.gameTime = inGameTime;
-
-                    });
-                }
-            }
-            catch(java.time.DateTimeException e){
-                System.err.println("Your game lasted too long");
-            }
-
-
-
-        }
+    public void setLblTimeText(String str) {
+        lblTime.setText(str);
     }
-
 }
 

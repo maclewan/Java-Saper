@@ -9,7 +9,7 @@ public class Board {
      * 1-8 in array means number of neighboring mines
      * 9 in array means mine
      * 10 in array means flag
-     * 11 in array means empty, not defined
+     * 11 in array means empty, not defined/opened
      */
     private Integer[][] array;
 
@@ -150,5 +150,16 @@ public class Board {
             }
         }
         return true;
+    }
+
+    public int getNotOpened(){
+        int counter = 0;
+        for(Integer i[] : array){
+            for(Integer j : i){
+                if(j>9)
+                    counter++;
+            }
+        }
+        return counter;
     }
 }

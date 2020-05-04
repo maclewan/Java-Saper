@@ -69,17 +69,17 @@ public class StartMenuController {
             size=24;
 
         try {
-            Stage stage = new Stage();
+            Stage newStage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Fxml/Board.fxml"));
 
-            BoardController boardController = new BoardController(stage,size);
+            BoardController boardController = new BoardController(newStage,size);
             fxmlLoader.setController(boardController);
 
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("Saper");
-            stage.setScene(scene);
-            stage.show();
-            stage.setResizable(true);
+            newStage.setTitle("Saper");
+            newStage.setScene(scene);
+            newStage.show();
+            newStage.setResizable(true);
 
             thisStage.close();
 
