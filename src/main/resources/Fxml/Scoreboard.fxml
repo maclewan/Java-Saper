@@ -1,20 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
-    <Tab text="Standardowe plansze" >
+    <Tab text="Standardowe plansze">
       <content>
+        <TabPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="367.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+          <Tab text="8x8">
+                  <content>
+                     <ScrollPane>
+                        <content>
+                           <ListView fx:id="listView8" maxWidth="-Infinity" minHeight="300.0" minWidth="580.0" prefHeight="330.0" prefWidth="580.0" />
+                        </content>
+                     </ScrollPane>
+                  </content></Tab>
+          <Tab text="16x16">
+                  <content>
+                     <ScrollPane>
+                        <content>
+                           <ListView fx:id="listView16" maxWidth="-Infinity" minHeight="300.0" minWidth="580.0" prefHeight="330.0" prefWidth="580.0" />
+                        </content>
+                     </ScrollPane>
+                  </content></Tab>
+          <Tab text="24x24">
+                  <content>
+                     <ScrollPane>
+                        <content>
+                           <ListView fx:id="listView24" maxWidth="-Infinity" minHeight="300.0" minWidth="580.0" prefHeight="330.0" prefWidth="580.0" />
+                        </content>
+                     </ScrollPane>
+                  </content></Tab>
+        </TabPane>
 
       </content>
     </Tab>
-    <Tab text="Niestandardowe plansze">
+    <Tab fx:id="listViewCustom" text="Niestandardowe plansze">
       <content>
 
       </content>
+         <content>
+            <ScrollPane>
+               <content>
+                  <ListView fx:id="listViewCustom" maxWidth="-Infinity" minHeight="300.0" minWidth="580.0" prefHeight="360.0" prefWidth="580.0" />
+               </content>
+            </ScrollPane>
+         </content>
     </Tab>
   </tabs>
 </TabPane>

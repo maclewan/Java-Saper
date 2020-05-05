@@ -99,6 +99,8 @@ public class GameLogic {
     }
 
     public void checkIfGameWon(){
+        if(isGameEnded)
+            return;
         int notOpened = playersBoard.getNotOpened();
         if(notOpened==mines) {
             gameWon();

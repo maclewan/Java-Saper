@@ -1,7 +1,7 @@
 package Saper.Classes;
 
 
-public class Score {
+public class Score implements Comparable<Score>{
     private String time;
     private String name;
     private int size;
@@ -57,4 +57,18 @@ public class Score {
         this.mines = mines;
     }
 
+    @Override
+    public int compareTo(Score scoreToComp){
+        int thisTime = Integer.parseInt(this.getTime().substring(0,2))*60 +
+                Integer.parseInt(this.getTime().substring(3,5));
+        int secondTime = Integer.parseInt(scoreToComp.getTime().substring(0,2))*60 +
+                Integer.parseInt(scoreToComp.getTime().substring(3,5));
+        System.out.println(thisTime-secondTime);
+        return thisTime-secondTime;
+    }
+
+    @Override
+    public String toString() {
+        return time+"\t\t "+name+"\t\t\tplansza="+size+"x"+size+"\t\tilość min="+mines;
+    }
 }

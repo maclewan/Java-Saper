@@ -7,7 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class StartMenuController {
     private Button btnStart;
 
     @FXML
-    private Button btnLeaderboard;
+    private Button btnScoreboard;
 
     @FXML
     private void initialize(){
@@ -90,8 +92,25 @@ public class StartMenuController {
     }
 
     @FXML
-    void btnLeaderboardClicked(ActionEvent event) {
+    void btnScoreboardClicked(ActionEvent event) {
+        try {
+            Stage newStage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Fxml/Scoreboard.fxml"));
 
+            ScoreboardController sbc= new ScoreboardController(thisStage,newStage);
+            fxmlLoader.setController(sbc);
+
+            Scene scene = new Scene(fxmlLoader.load());
+            newStage.setTitle("Wyniki");
+            newStage.setScene(scene);
+            newStage.setResizable(false);
+
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
