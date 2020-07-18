@@ -44,7 +44,7 @@ Przykładowa rozgrywka:
 ![](images/s4.png)
 
 Po oznaczeniu wszystkich min, bądź po odkryciu wszystkich pól bezpiecznych stoper przestaje mierzyć czas, 
-a swój wynik można zapisać pod własnym pseudonimem:
+a wynik można zapisać pod własnym pseudonimem:
 
 ![](images/s5.png)
 
