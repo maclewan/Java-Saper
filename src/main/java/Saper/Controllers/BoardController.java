@@ -236,12 +236,12 @@ public class BoardController {
         for(int i=0;i<logic.getSize();i++){
             for(int j=0;j<logic.getSize();j++){
                 if(logic.getPlayersBoard().getNum(j,i)==10 && logic.getBoard().getNum(j,i)!=9){
-                    ToggleButton tempButton = buttonList.get(i*8 +j);
+                    ToggleButton tempButton = buttonList.get(i*logic.getSize() +j);
                     tempButton.setSelected(true);
                     setButtonImage(tempButton,12);
                 }
                 else if(logic.getPlayersBoard().getNum(j,i)==11){
-                    ToggleButton tempButton = buttonList.get(i*8 +j);
+                    ToggleButton tempButton = buttonList.get(i*logic.getSize() +j);
                     tempButton.setSelected(true);
                     setButtonImage(tempButton,logic.getBoard().getNum(j,i));
                 }

@@ -1,134 +1,32 @@
 [
     {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:05"
-    },
-    {
         "mines": "8",
         "size": "8",
-        "name": "Anonim",
-        "time": "00:15"
-    },
-    {
-        "mines": "5",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:04"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "5",
-        "size": "8",
-        "name": "Anonim",
+        "name": "Elon Musk",
         "time": "00:10"
     },
     {
-        "mines": "5",
+        "mines": "10",
+        "size": "8",
+        "name": "Steve Jobs",
+        "time": "00:22"
+    },
+    {
+        "mines": "6",
+        "size": "8",
+        "name": "Elon Musk",
+        "time": "00:08"
+    },
+    {
+        "mines": "10",
+        "size": "8",
+        "name": "Elon Musk",
+        "time": "00:17"
+    },
+    {
+        "mines": "10",
         "size": "8",
         "name": "Anonim",
-        "time": "00:09"
-    },
-    {
-        "mines": "5",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:11"
-    },
-    {
-        "mines": "3",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:05"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:02"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:02"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:02"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:02"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "kk",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Anonim",
-        "time": "00:01"
-    },
-    {
-        "mines": "1",
-        "size": "8",
-        "name": "Maciuś",
-        "time": "00:01"
+        "time": "00:28"
     }
 ]

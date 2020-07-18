@@ -60,8 +60,6 @@ public class GameLogic {
                 if(board.getNum(x,y)!=9){
                     temp= x + size * y;
 
-
-
                     bc.getButtonList().get(temp).setSelected(true);
                     bc.leftClickBoardButton(temp);
                 }
@@ -124,12 +122,20 @@ public class GameLogic {
 
         try {
             mines=Integer.parseInt(bc.getFldCountText());
-            if(mines>((size*size)-1))
+            if(mines>((size*size/2)))
                 throw new NumberFormatException();
             board.setMines(mines);
         }
         catch (NumberFormatException e){
-            bc.setFldCountText("Wrong number");
+            bc.setFldCountText("");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            String temp = "Błędna ilość min! \nPodaj liczbę z przedziału <1, ";
+            temp += Integer.toString((int)(size*size/2));
+            temp += ">";
+            alert.setContentText(temp);
+            alert.showAndWait();
             return;
         }
         //todo: usunac:
