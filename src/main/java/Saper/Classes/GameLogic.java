@@ -293,5 +293,14 @@ public class GameLogic {
 
 
         }
+
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void setPlayersBoard(Board playersBoard) {
+        this.playersBoard = playersBoard;
     }
 }

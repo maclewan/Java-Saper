@@ -31,7 +31,7 @@ public class BoardController {
     }
 
     @FXML
-    private void initialize(){
+    public void initialize(){
         if(logic.getSize()==8){
             logic.setMines(10);
         }
@@ -273,6 +273,10 @@ public class BoardController {
 
     public void setLblTimeText(String str) {
         lblTime.setText(str);
+    }
+
+    public GameLogic getLogic() {
+        return logic;
     }
 }
 

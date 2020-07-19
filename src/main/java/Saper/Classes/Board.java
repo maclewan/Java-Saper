@@ -23,6 +23,11 @@ public class Board {
         }
     }
 
+    public Board(Integer[][] array){
+        this.array = array;
+        this.size = 8;
+    }
+
     public boolean setMine(int x, int y){
         if(array[x][y]!=9) {
             array[x][y]=9;
@@ -161,5 +166,9 @@ public class Board {
             }
         }
         return counter;
+    }
+
+    public Integer[][] getArray() {
+        return array;
     }
 }

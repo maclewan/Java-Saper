@@ -8,6 +8,7 @@ import Saper.Controllers.StartMenuController;
 
 
 public class Main extends Application {
+    private static Stage stage;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -23,17 +24,16 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
-
-
-
-
-
-
+        stage=primaryStage;
 
     }
 
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getStage(){
+        return stage;
     }
 }
