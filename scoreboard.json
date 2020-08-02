@@ -34,5 +34,23 @@
         "size": "8",
         "name": "Anonim",
         "time": "00:20"
+    },
+    {
+        "mines": "5",
+        "size": "8",
+        "name": "Anonim",
+        "time": "00:14"
+    },
+    {
+        "mines": "10",
+        "size": "8",
+        "name": "Anonim",
+        "time": "00:32"
+    },
+    {
+        "mines": "1",
+        "size": "8",
+        "name": "Anonim",
+        "time": "00:01"
     }
 ]

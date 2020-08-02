@@ -21,7 +21,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="12">
-      <module name="Saper" target="8" />
+      <module name="Saper" target="12" />
     </bytecodeTargetLevel>
   </component>
 </project>

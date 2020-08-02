@@ -70,7 +70,6 @@ public class Board {
      * @param num Number (from 0 to 11) to set
      */
     public void setNum(int btnNum, int num){
-
         array[btnNum%size][btnNum/size]=num;
     }
 
@@ -87,16 +86,15 @@ public class Board {
         for(int i=0;i<ammount;i++) {
             int x = random.nextInt(size);
             int y = random.nextInt(size);
-            if(array[x][y]!=11){
+            if(!setMine(x,y)){
                 i--;
-                continue;
             }
-            else
-                array[x][y]=9;
         }
         refactorMines();
         return true;
     }
+
+
 
     /**
      * Method for printing board in terminal

@@ -16,8 +16,7 @@ import org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameLogicTest {
 
@@ -69,7 +68,7 @@ class GameLogicTest {
     }
 
     @Test
-    void openZerosTest() throws InterruptedException {
+    void openZeros() throws InterruptedException {
 
         zerosArray = new Integer[8][8];
         elevensArray = new Integer[8][8];
@@ -90,7 +89,7 @@ class GameLogicTest {
     }
 
     @Test
-    void checkScoreTest1() {
+    void checkScore() {
         Board board = new Board(zerosArray);
         Board playersBoard = new Board(elevensArray);
 
@@ -99,11 +98,47 @@ class GameLogicTest {
         logic.setBoard(board);
 
         logic.setMines(64);
-
-        assertEquals(logic.checkScore(),true);
+        assertTrue(logic.checkScore());
 
         logic.setMines(63);
-        assertEquals(logic.checkScore(),false);
+        assertFalse(logic.checkScore());
+
+        logic.setMines(1);
+        logic.setMinesPlaced(2);
+        assertFalse(logic.checkScore());
+
+
+        logic.setMines(2);
+        logic.setMinesPlaced(2);
+        board.setNum(0,9);
+        board.setNum(1,9);
+        playersBoard.setNum(0,10);
+        playersBoard.setNum(1,10);
+        for(int i=2; i<64;i++){
+            playersBoard.setNum(i,0);
+        }
+        logic.setPlayersBoard(playersBoard);
+        logic.setBoard(board);
+        assertTrue(logic.checkScore());
+
+        playersBoard.setNum(0,10);
+        playersBoard.setNum(1,11);
+        for(int i=2; i<64;i++){
+            playersBoard.setNum(i,0);
+        }
+        playersBoard.setNum(2,10);
+        logic.setPlayersBoard(playersBoard);
+        logic.setBoard(board);
+        assertFalse(logic.checkScore());
+
+        playersBoard.setNum(0,10);
+        playersBoard.setNum(1,11);
+        for(int i=2; i<64;i++){
+            playersBoard.setNum(i,0);
+        }
+        logic.setPlayersBoard(playersBoard);
+        logic.setBoard(board);
+        assertTrue(logic.checkScore());
     }
 }
 

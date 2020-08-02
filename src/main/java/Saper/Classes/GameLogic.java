@@ -111,7 +111,7 @@ public class GameLogic {
         else if(minesPlaced>mines){
             return false;
         }
-        else if(notOpened+minesPlaced>minesPlaced){
+        else if(notOpened+minesPlaced>mines){
             return false;
         }
         for (int i = 0; i < size * size; i++) {
@@ -119,7 +119,6 @@ public class GameLogic {
                 return false;
             }
         }
-        System.out.println("Ebebeb");
         return true;
     }
 
@@ -314,5 +313,9 @@ public class GameLogic {
 
     public void setGameEnded(boolean gameEnded) {
         isGameEnded = gameEnded;
+    }
+
+    public void setMinesPlaced(int minesPlaced) {
+        this.minesPlaced = minesPlaced;
     }
 }
