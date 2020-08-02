@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions.*;
 
@@ -27,19 +28,12 @@ class GameLogicTest {
     static Stage stage;
 
 
-    @Test
-    public void testA() throws InterruptedException {
-
-    }
-
-
     @BeforeAll
     static void prepare() throws InterruptedException {
         Thread thread = new Thread(() -> {
             new JFXPanel();
             Platform.runLater(() -> {
                 try {
-                    /**Jakby to wsadzić do beforeall?*/
                     stage = new Stage();
                     FXMLLoader fxmlLoader = new FXMLLoader(GameLogicTest.class.getClassLoader().getResource("Fxml/Board.fxml"));
 
@@ -52,8 +46,6 @@ class GameLogicTest {
                     bc = boardController;
                     logic = bc.getLogic();
 
-                    /**Jakby to wyjąc?*/
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -64,6 +56,17 @@ class GameLogicTest {
 
     }
 
+    @BeforeEach
+    void prepareArrays(){
+        zerosArray = new Integer[8][8];
+        elevensArray = new Integer[8][8];
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                zerosArray[i][j]=0;
+                elevensArray[i][j]=11;
+            }
+        }
+    }
 
     @Test
     void openZerosTest() throws InterruptedException {
@@ -83,16 +86,24 @@ class GameLogicTest {
 
 
         bc.leftClickBoardButton(0);
-        assertArrayEquals(logic.getPlayersBoard().getArray(),logic.getBoard().getArray());
-
+        assertArrayEquals(logic.getPlayersBoard().getArray(),logic.getBoard().getArray(),"Arrays should be equal");
     }
 
     @Test
-    void openSafeAreas() {
-    }
+    void checkScoreTest1() {
+        Board board = new Board(zerosArray);
+        Board playersBoard = new Board(elevensArray);
 
-    @Test
-    void checkIfGameWon() {
+        logic.setGameEnded(false);
+        logic.setPlayersBoard(playersBoard);
+        logic.setBoard(board);
+
+        logic.setMines(64);
+
+        assertEquals(logic.checkScore(),true);
+
+        logic.setMines(63);
+        assertEquals(logic.checkScore(),false);
     }
 }
 

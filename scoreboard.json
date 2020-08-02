@@ -28,5 +28,11 @@
         "size": "8",
         "name": "Anonim",
         "time": "00:28"
+    },
+    {
+        "mines": "10",
+        "size": "8",
+        "name": "Anonim",
+        "time": "00:20"
     }
 ]

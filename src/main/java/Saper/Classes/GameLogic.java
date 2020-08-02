@@ -97,22 +97,30 @@ public class GameLogic {
     }
 
     public void checkIfGameWon(){
-        if(isGameEnded)
-            return;
-        int notOpened = playersBoard.getNotOpened();
-        if(notOpened==mines) {
+        if(checkScore())
             gameWon();
-            return;
+    }
+
+    public boolean checkScore(){
+        if(isGameEnded)
+            return false;
+        int notOpened = playersBoard.getNotOpenedCount();
+        if(notOpened==mines) {
+            return true;
         }
         else if(minesPlaced>mines){
-            return;
+            return false;
+        }
+        else if(notOpened+minesPlaced>minesPlaced){
+            return false;
         }
         for (int i = 0; i < size * size; i++) {
             if (board.getNum(i) == 9 && !(playersBoard.getNum(i) == 10)) {
-                return;
+                return false;
             }
         }
-        gameWon();
+        System.out.println("Ebebeb");
+        return true;
     }
 
     public void startGame(){
@@ -302,5 +310,9 @@ public class GameLogic {
 
     public void setPlayersBoard(Board playersBoard) {
         this.playersBoard = playersBoard;
+    }
+
+    public void setGameEnded(boolean gameEnded) {
+        isGameEnded = gameEnded;
     }
 }
