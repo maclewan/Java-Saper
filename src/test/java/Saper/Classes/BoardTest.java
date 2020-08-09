@@ -57,21 +57,34 @@ class BoardTest {
 
     @Test
     void getNumberOfMinesAround() {
+        board.setMine(0,1);
+        board.setMine(1,0);
+        board.refactorMines();
+        assertEquals(2,board.getNumberOfMinesAround(0,0));
+
+        board.setMine(4,5);
+        board.setMine(5,4);
+        board.setMine(5,5);
+        board.refactorMines();
+        assertEquals(3,board.getNumberOfMinesAround(4,4));
     }
 
-    @Test
-    void getNum() {
-    }
-
-    @Test
-    void testGetNum() {
-    }
 
     @Test
     void verifyMines() {
+        board.refactorMines();
+        assertTrue(board.verifyMines());
+
+        board.setMine(4,5);
+        board.refactorMines();
+        assertFalse(board.verifyMines());
     }
 
     @Test
     void getNotOpenedCount() {
+        board.refactorMines();
+        board.setNum(4,10);
+        board.setNum(5,11);
+        assertEquals(2,board.getNotOpenedCount());
     }
 }

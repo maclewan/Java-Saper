@@ -149,7 +149,7 @@ public class Board {
         }
         int counter=0;
 
-        //todo: Wrap into one for using sinus function
+        //todo: Wrap into one for-loop using sinus function
         try{
             if(array[i-1][j]==9 || array[i-1][j]==10)
                 counter++;
@@ -209,7 +209,7 @@ public class Board {
 
     /**
      * Method checking if there are any mines on board
-     * @return False if there are any mine, else True
+     * @return False if there is any mine, else True
      */
     public boolean verifyMines(){
         for(int i=0;i<size;i++){
